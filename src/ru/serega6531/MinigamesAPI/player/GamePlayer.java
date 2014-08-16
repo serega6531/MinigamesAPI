@@ -124,7 +124,7 @@ public class GamePlayer {
 	}
 	
 	public String toString(){
-		return "GamePlayer[name=" + name + "]";
+		return name;
 	}
 
 }

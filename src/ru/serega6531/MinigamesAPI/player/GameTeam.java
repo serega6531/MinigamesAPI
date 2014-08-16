@@ -70,6 +70,20 @@ public class GameTeam {
 		List<String> list = new ArrayList<String>();
 		
 		for(GamePlayer player : players)
+			list.add(player.getName());
+			
+		return list;
+	}
+	
+	/**
+	 * @return Tean members colored names list
+	 * @see GameTeam#getPlayers()
+	 */
+	
+	public List<String> getPlayersColoredNames(){
+		List<String> list = new ArrayList<String>();
+		
+		for(GamePlayer player : players)
 			list.add(color + player.getName());
 			
 		return list;

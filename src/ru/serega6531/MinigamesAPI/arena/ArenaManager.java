@@ -19,7 +19,7 @@ public class ArenaManager {
 	HashMap<String, GameArena> arenas = new HashMap<String, GameArena>();
 	
 	/**
-	 * Creatng new arena.
+	 * Creating new arena.
 	 * The corners of arena are changing to the smallest and biggest automatically.
 	 * @param name Arena name
 	 * @param fc First corner

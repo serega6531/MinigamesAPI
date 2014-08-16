@@ -38,7 +38,6 @@ public class GamePlayerCrossArenaBorderEvent extends Event {
 	}
 
 	private static final HandlerList handlers = new HandlerList();
-	private boolean cancelled = false;
 	 
 	public HandlerList getHandlers() {
 	    return handlers;
@@ -47,13 +46,5 @@ public class GamePlayerCrossArenaBorderEvent extends Event {
 	public static HandlerList getHandlerList() {
 	    return handlers;
 	}
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
- 
-    public void setCancelled(boolean cancel) {
-        cancelled = cancel;
-    }
 
 }

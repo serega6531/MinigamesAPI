@@ -20,6 +20,7 @@ import ru.serega6531.MinigamesAPI.events.GameSessionNotEnoughtPlayersEvent;
 import ru.serega6531.MinigamesAPI.events.GameSessionStartEvent;
 import ru.serega6531.MinigamesAPI.events.GameSessionStopEvent;
 import ru.serega6531.MinigamesAPI.events.GameSessionTickEvent;
+import ru.serega6531.MinigamesAPI.events.MAPINeedUpdateTabColorEvent;
 import ru.serega6531.MinigamesAPI.events.PlayerJoinGameSessionEvent;
 import ru.serega6531.MinigamesAPI.events.PlayerLeaveGameSessionEvent;
 import ru.serega6531.MinigamesAPI.player.GamePlayer;
@@ -218,8 +219,9 @@ public class GameSession {
 			player.getEntity().setExp(0);
 			player.getEntity().setLevel(0);
 			try {
+				Class.forName("org.mcsg.double0negative.tabapi.TabAPI");
 				TabAPI.clearTab(player.getEntity());
-			} catch(NullPointerException e){}
+			} catch(NullPointerException | ClassNotFoundException e){}
 		}
 		rebuildTab();
 	}
@@ -340,11 +342,20 @@ public class GameSession {
 		
 		List<String> tab = new ArrayList<String>();
 		
+		MAPINeedUpdateTabColorEvent e = new MAPINeedUpdateTabColorEvent(this);
+		Bukkit.getPluginManager().callEvent(e);
+		
+		try {
+			Class.forName("org.mcsg.double0negative.tabapi.TabAPI");
+		} catch(ClassNotFoundException ex){
+			return;
+		}
+		
 		for(GameTeam team : getTeams())
 			for(String player : team.getPlayersNames())
-				tab.add(player);
+				tab.add(e.formatTab(player));
 		tab.sort(new Comparator<String>() {
-
+	
 			@Override
 			public int compare(String o1, String o2) {
 				return o1.compareTo(o2);
@@ -358,18 +369,20 @@ public class GameSession {
 			for(GamePlayer player : team.getPlayers()){
 				Player p = player.getEntity();
 				if(p == null) continue;
-				try {
-					TabAPI.clearTab(p);
-				} catch(NullPointerException e){
-					continue;
-				}
+				TabAPI.clearTab(p);
 				hor = 0;
-				vert = 1;
-				TabAPI.setTabString(MinigamesAPI.getInstance(), p, 0, 0, ChatColor.BLUE + "Players list");
+				vert = 0;
 				for(String nick : tab){
 					if(vert == TabAPI.getVertSize()){
 						if(hor + 1 == TabAPI.getHorizSize()) continue;
-						vert = 0;
+						if(hor == 1){
+							if(e.getTabHeader() != null){
+								TabAPI.setTabString(MinigamesAPI.getInstance(), p, 0, 1, e.getTabHeader());
+								vert = 1;
+							}
+							vert = 1; 
+						} else
+							vert = 0;
 						hor++;
 					}
 					TabAPI.setTabString(MinigamesAPI.getInstance(), p, vert, hor, nick);
